@@ -1,27 +1,15 @@
-# OS X
-.DS_Store*
-Icon?
-._*
+const mongoose = require("mongoose");
 
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# Linux
-.directory
-*~
-
-
-# npm
-node_modules
-package-lock.json
-*.log
-*.gz
-
-
-# Coveralls
-coverage
-
-# Benchmarking
-benchmarks/graphs
+module.exports = async () => {
+    try {
+        const connectionParams = {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+        };
+        await mongoose.connect(process.env.DB, connectionParams);
+        console.log("connected to database.");
+    } catch (error) {
+        console.log("could not connect to database", error);
+    }
+};
