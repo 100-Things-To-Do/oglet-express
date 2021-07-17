@@ -1,6 +1,5 @@
 const { User, validate } = require("../models/user")
 const bcrypt = require("bcrypt")
-const Joi = require("joi")
 const router = require("express").Router()
 const ensureToken = require("../middleware/jwt")
 
@@ -78,6 +77,13 @@ router.get("/me", ensureToken, (req, res) => {
     res.status(200).json({
         "message": "ensured"
     })
+
+})
+
+
+router.get("/", ensureToken, async (req, res) => {
+    const allUsers = await User.find({}).populate("auctions")
+    res.json(allUsers)
 
 })
 

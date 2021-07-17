@@ -4,6 +4,10 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 
 const userSchema = new Schema({
+    auctions: [{
+        type: Schema.Types.ObjectId,
+        ref: 'auction'
+    }],
     username: {
         type: String,
         required: true,

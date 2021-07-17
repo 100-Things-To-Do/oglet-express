@@ -7,14 +7,14 @@ function ensureToken(req, res, next){
 
         jwt.verify(token, process.env.JWTPRIVATEKEY, function(err, data){
             if(err){
-                res.status(403)
+                res.status(403).json(err)
             }else{
                 req.data = data;
                 next()
             }
         })
     }else{
-        res.status(403)
+        res.status(403).send("JWT is null")
     }
 }
 
