@@ -1,4 +1,4 @@
-const { User, validate } = require("../models/user")
+const { User, validateUser } = require("../models/user")
 const bcrypt = require("bcrypt")
 const router = require("express").Router()
 const ensureToken = require("../middleware/jwt")
@@ -11,7 +11,7 @@ const ensureToken = require("../middleware/jwt")
 
 router.post("/signup", async (req, res) => {
     try {
-        const { error } = validate(req.body);
+        const { error } = validateUser(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
         const sameUsernameUser = await User.findOne({ username: req.body.username });
@@ -36,7 +36,7 @@ router.post("/signup", async (req, res) => {
 router.post("/signin", async (req, res) => {
     try {
         
-        const { error } = validate(req.body);
+        const { error } = validateUser(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
         const user = await User.findOne({ username: req.body.username });

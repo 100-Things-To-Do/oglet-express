@@ -12,7 +12,7 @@ router.post("/", ensureToken, async (req, res) => {
         req.body.owner = activeUser._id
         const auction = new Auction(req.body);
         auction.save()
-        activeUser.auctions.push(auction)
+        activeUser.auctions.push(auction._id)
         activeUser.save()
         res.send(auction);
     } catch (error) {

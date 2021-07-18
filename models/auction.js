@@ -7,6 +7,10 @@ const auctionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'user'
     },
+    offers: [{
+        type: Schema.Types.ObjectId,
+        ref: 'offer'
+    }],
     name: {
         type: String,
         required: true,

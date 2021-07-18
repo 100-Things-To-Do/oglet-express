@@ -8,6 +8,10 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'auction'
     }],
+    offers: [{
+        type: Schema.Types.ObjectId,
+        ref: 'offer'
+    }],
     username: {
         type: String,
         required: true,
@@ -26,7 +30,7 @@ userSchema.methods.generateAuthToken = function () {
 
 const User = mongoose.model("user", userSchema);
 
-const validate = (user) => {
+const validateUser = (user) => {
     const schema = Joi.object({
         username: Joi.string().required(),
         password: Joi.string().required(),
@@ -34,4 +38,4 @@ const validate = (user) => {
     return schema.validate(user);
 };
 
-module.exports = { User, validate };
+module.exports = { User, validateUser };
