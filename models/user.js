@@ -12,6 +12,10 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'offer'
     }],
+    notifications: [{
+        type: Schema.Types.ObjectId,
+        ref: 'notification'
+    }],
     username: {
         type: String,
         required: true,

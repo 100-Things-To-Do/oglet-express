@@ -3,6 +3,7 @@ const express = require('express')
 const usersRouter = require("./routers/users")
 const auctionsRouter = require("./routers/auctions")
 const offerRouter = require("./routers/offers")
+const notificationRouter = require("./routers/notifications")
 const connection = require("./db");
 
 const server = express()
@@ -12,6 +13,7 @@ server.use(express.json())
 server.use("/users", usersRouter)
 server.use("/auctions", auctionsRouter)
 server.use("/offers", offerRouter)
+server.use("/notifications", notificationRouter)
 
 server.get('/', (req, res) => {
     res.send("Hello from expressjs")

@@ -9,7 +9,7 @@ function ensureToken(req, res, next){
             if(err){
                 res.status(403).json(err)
             }else{
-                req.data = data;
+                req.currentUser = data;
                 next()
             }
         })

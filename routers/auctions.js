@@ -8,7 +8,7 @@ router.post("/", ensureToken, async (req, res) => {
         const { error } = validateAuction(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
-        const activeUser = await User.findOne({ _id: req.data._id});
+        const activeUser = await User.findOne({ _id: req.currentUser._id});
         req.body.owner = activeUser._id
         const auction = new Auction(req.body);
         auction.save()

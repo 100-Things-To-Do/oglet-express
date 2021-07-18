@@ -11,11 +11,16 @@ router.post("/:auctionId", ensureToken, async (req, res) => {
         const { error } = validateOffer(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
-        const activeUser = await User.findOne({ _id: req.data._id});
+        const activeUser = await User.findOne({ _id: req.currentUser._id});
         req.body.owner = activeUser._id
 
         const auction = await Auction.findOne({ _id: new mongoose.Types.ObjectId(auctionId)});
-        req.body.auction = auction._id
+        if(auction !== null){
+            req.body.auction = auction._id
+        }else{
+            res.send("auction with that id is not found.")
+        }
+
 
 
         const offer = new Offer(req.body)
