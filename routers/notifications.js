@@ -33,4 +33,24 @@ router.get("/", ensureToken, async (req, res) => {
     res.json(userNotifications)
 })
 
+router.delete("/:notificationId", ensureToken, async (req, res) => {
+    const { notificationId } = req.params
+    const notification = await Notification.findOne({_id: notificationId})
+    if(!notification) return res.status(400).send("notification not found");
+    const activeUser = await User.findOne({ _id: req.currentUser._id});
+    activeUser.notifications.remove(notification._id)
+    activeUser.save()
+    notification.delete()
+    res.status(200).send("Notification deleted.")
+})
+
+router.put("/:notificationId", ensureToken, async (req, res) => {
+    const { notificationId } = req.params
+    const notification = await Notification.findOne({_id: notificationId})
+    if(!notification) return res.status(400).send("notification not found");
+    notification.isRead = req.body.isRead
+    notification.save()
+    res.status(200).send("Notification updated.")  
+})
+
 module.exports = router
