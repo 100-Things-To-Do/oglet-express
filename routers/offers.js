@@ -8,27 +8,25 @@ const mongoose = require("mongoose");
 router.post("/:auctionId", ensureToken, async (req, res) => {
     try{
         const { auctionId } = req.params
+        const {myUser} = req
         const { error } = validateOffer(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
-        const activeUser = await User.findOne({ _id: req.currentUser._id});
-        req.body.owner = activeUser._id
+        req.body.owner = req.myUser._id
 
-        const auction = await Auction.findOne({ _id: new mongoose.Types.ObjectId(auctionId)});
+        const auction = await Auction.findOne({ _id: auctionId});
         if(auction !== null){
             req.body.auction = auction._id
         }else{
             res.send("auction with that id is not found.")
         }
 
-
-
         const offer = new Offer(req.body)
         // relationlar guncelleniyor
         auction.offers.push(offer._id)
         auction.save()
-        activeUser.offers.push(offer._id)
-        activeUser.save()
+        myUser.offers.push(offer._id)
+        myUser.save()
 
         offer.save()
         res.send(offer);
@@ -40,6 +38,27 @@ router.post("/:auctionId", ensureToken, async (req, res) => {
 
 })
 
+router.put("/:offerId", ensureToken, async (req, res) => {
+    const { offerId } = req.params
+    const { price } = req.body
+    const offer = await Offer.findOne({ _id: offerId});
+    if(price) offer.price = price
+    offer.save()
+    res.status(200).send("offer updated.")
+})
+
+router.delete("/:offerId", ensureToken, async (req, res) => {
+    const { offerId } = req.params
+    const { myUser } = req
+    const offer = await Offer.findOne({ _id: offerId});
+    const auction = await Auction.findOne({ _id: offer.auction});
+    myUser.offers.remove(offerId)
+    auction.offers.remove(offerId)
+    myUser.save()
+    auction.save()
+    offer.delete()
+    res.status(200).send("offer deleted.")
+})
 
 
 router.get("/", ensureToken, async (req, res) => {

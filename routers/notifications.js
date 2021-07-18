@@ -6,17 +6,15 @@ const mongoose = require("mongoose");
 
 router.post("/", ensureToken, async (req, res) => {
     try{
+        const {myUser} = req
         const { error } = validateNotification(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
-        const activeUser = await User.findOne({ _id: req.currentUser._id});
-        req.body.owner = activeUser._id
-
-
+        req.body.owner = myUser._id
         const notification = new Notification(req.body)
         // relationlar guncelleniyor
-        activeUser.notifications.push(notification._id)
-        activeUser.save()
+        myUser.notifications.push(notification._id)
+        myUser.save()
 
         notification.save()
         res.send(notification);
@@ -35,11 +33,11 @@ router.get("/", ensureToken, async (req, res) => {
 
 router.delete("/:notificationId", ensureToken, async (req, res) => {
     const { notificationId } = req.params
+    const {myUser} = req
     const notification = await Notification.findOne({_id: notificationId})
     if(!notification) return res.status(400).send("notification not found");
-    const activeUser = await User.findOne({ _id: req.currentUser._id});
-    activeUser.notifications.remove(notification._id)
-    activeUser.save()
+    myUser.notifications.remove(notification._id)
+    myUser.save()
     notification.delete()
     res.status(200).send("Notification deleted.")
 })

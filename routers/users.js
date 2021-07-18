@@ -61,10 +61,9 @@ router.post("/signin", async (req, res) => {
 
 
 
-router.delete("/", async (req, res) => {
-    const user = await User.findOne({ username: req.body.username });
-    if (!user) return res.status(400).send("User not found");
-    user.delete()
+router.delete("/", ensureToken, async (req, res) => {
+    const {myUser} = req
+    myUser.delete()
     res.status(200).send("User deleted")
 
 })
