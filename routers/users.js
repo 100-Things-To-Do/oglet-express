@@ -1,4 +1,7 @@
 const { User, validateUser } = require("../models/user")
+const { Notification, validateNotification } = require("../models/notification")
+const { Auction, validateAuction } = require("../models/auction")
+const { Offer, validateOffer } = require("../models/offer")
 const bcrypt = require("bcrypt")
 const router = require("express").Router()
 const ensureToken = require("../middleware/jwt")
@@ -60,21 +63,9 @@ router.post("/signin", async (req, res) => {
 
 
 
-
-router.delete("/", ensureToken, async (req, res) => {
-    const {myUser} = req
-    myUser.delete()
-    res.status(200).send("User deleted")
-
-})
-
-
-
-
-
 router.get("/me", ensureToken, (req, res) => {
     res.status(200).json({
-        "message": "ensured"
+        "message": "TODO: will return jwt token here"
     })
 
 })
@@ -83,6 +74,38 @@ router.get("/me", ensureToken, (req, res) => {
 router.get("/", ensureToken, async (req, res) => {
     const allUsers = await User.find({}).populate("auctions")
     res.json(allUsers)
+
+})
+
+router.put("/", ensureToken, async (req, res) => {
+    const {myUser} = req
+    const {newPassword} = req.body
+    const salt = await bcrypt.genSalt(Number(process.env.SALT));
+    myUser.password = await bcrypt.hash(newPassword, salt);
+    myUser.save()
+    res.status(200).send("password updated.")
+
+})
+
+
+router.delete("/", ensureToken, async (req, res) => {
+    // delete notifications
+    // delete user auctions - delete user auction offers
+    // delete user offers
+    // delete user itself
+    const {myUser} = req
+    await Notification.deleteMany({owner: myUser._id})
+    const userAuctions = await Auction.find({owner: myUser._id})
+    await Auction.deleteMany({owner: myUser._id})
+
+    await userAuctions.forEach(auction => {
+        Offer.deleteMany({auction: auction._id})
+    })
+
+    await Offer.deleteMany({owner: myUser._id})
+
+    myUser.delete()
+    res.status(200).send("user deleted.")
 
 })
 

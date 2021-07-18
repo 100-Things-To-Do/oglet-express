@@ -62,4 +62,17 @@ router.delete("/:auctionId", ensureToken, async (req, res) => {
     res.send("auction deleted.")
 })
 
+router.put("/:auctionId", async (req, res) => {
+    const { auctionId } = req.params
+    const { myUser } = req
+    const { name, startingPrice, closingPrice } = req.body
+    
+    const auction = await Auction.findOne({_id: auctionId})
+    auction.name = name
+    auction.startingPrice = startingPrice
+    auction.closingPrice = closingPrice
+    auction.save()
+    res.status(200).send("auction updated")
+})
+
 module.exports = router
