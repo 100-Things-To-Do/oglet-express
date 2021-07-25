@@ -30,12 +30,6 @@ cron.schedule("*/5 * * * * *", async function() {
 
         }
     })
-    
-
-    
-
-
-    console.log(currentMs - auctionCreatedMs) 
   });
 
 router.post("/", ensureToken, async (req, res) => {
@@ -60,7 +54,14 @@ router.post("/", ensureToken, async (req, res) => {
 
 
 router.get("/", ensureToken, async (req, res) => {
-    const allAuctions = await Auction.find({}).populate("owner")
+    const { isOver } = req.body
+    var allAuctions
+    if(isOver !== null){
+        allAuctions = await Auction.find({isOver: isOver}).populate("owner")
+    }else{
+        allAuctions = await Auction.find({}).populate("owner")
+    }
+    
     res.status(200).json(allAuctions)
 })
 
