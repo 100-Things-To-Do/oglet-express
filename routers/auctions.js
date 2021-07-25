@@ -3,6 +3,40 @@ const { Offer, validateOffer } = require("../models/offer")
 const { User, validateUser } = require("../models/user")
 const router = require("express").Router()
 const ensureToken = require("../middleware/jwt")
+const cron = require('node-cron');
+const { Notification, validateNotification} = require("../models/notification")
+
+const aDayToMs = 24 * 60 * 60 * 1000
+
+cron.schedule("*/5 * * * * *", async function() {
+    const currentMs = (new Date()).getTime()
+    const allAuctions = await Auction.find({isOver: false}).populate("offers").populate("owner")
+
+    allAuctions.forEach((auction) => {
+
+        var auctionCreatedMs = new Date(auction.createdAt).getTime();
+        if(currentMs > (auctionCreatedMs + aDayToMs)){
+            auction.isOver = true
+            auction.save()
+            
+            if(auction.offers !== []){
+                const buyerNotification = new Notification({owner: auction.offers[0].owner._id, message: "You have won auction with id: " + auction._id})
+                buyerNotification.save() 
+
+                const sellerNotification = new Notification({owner: auction.owner._id, message: "You have sold your item to user: " + auction.offers[0].owner.username})
+                sellerNotification.save()
+            }
+
+
+        }
+    })
+    
+
+    
+
+
+    console.log(currentMs - auctionCreatedMs) 
+  });
 
 router.post("/", ensureToken, async (req, res) => {
     try{
@@ -74,5 +108,7 @@ router.put("/:auctionId", async (req, res) => {
     auction.save()
     res.status(200).send("auction updated")
 })
+
+
 
 module.exports = router

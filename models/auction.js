@@ -22,6 +22,10 @@ const auctionSchema = new Schema({
     closingPrice: {
         type: Number,
         required: true,
+    },
+    isOver: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

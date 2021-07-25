@@ -5,6 +5,11 @@ const router = require("express").Router()
 const ensureToken = require("../middleware/jwt")
 const mongoose = require("mongoose");
 
+
+
+
+
+
 router.post("/:auctionId", ensureToken, async (req, res) => {
     try{
         const { auctionId } = req.params
@@ -24,8 +29,11 @@ router.post("/:auctionId", ensureToken, async (req, res) => {
         const offer = new Offer(req.body)
         // relationlar guncelleniyor
         auction.offers.push(offer._id)
+        auction.offers.sort((a, b) => a.price > b.price)
         auction.save()
+        
         myUser.offers.push(offer._id)
+        myUser.offers.sort((a, b) => a.price > b.price)
         myUser.save()
 
         offer.save()
