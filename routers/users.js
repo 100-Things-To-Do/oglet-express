@@ -109,5 +109,10 @@ router.delete("/", ensureToken, async (req, res) => {
 
 })
 
+router.get("/whoami", ensureToken, async (req, res) => {
+    const {myUser} = req
+    res.json(myUser)
+})
+
 module.exports = router
 
