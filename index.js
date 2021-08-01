@@ -12,6 +12,7 @@ connection();
 
 server.use(cors({credentials: true, origin: true}))
 server.use(express.json())
+server.use(express.static('client'))
 server.use("/users", usersRouter)
 server.use("/auctions", auctionsRouter)
 server.use("/offers", offerRouter)

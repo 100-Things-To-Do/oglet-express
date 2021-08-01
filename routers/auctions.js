@@ -5,6 +5,18 @@ const router = require("express").Router()
 const ensureToken = require("../middleware/jwt")
 const cron = require('node-cron');
 const { Notification, validateNotification} = require("../models/notification")
+const multer = require("multer")
+
+const storage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, "client/")
+    },
+    filename: (req, file, callback) => {
+        callback(null, Date.now() + ".jpg")
+    }
+})
+
+const upload = multer({storage: storage})
 
 const aDayToMs = 24 * 60 * 60 * 1000
 
@@ -32,13 +44,14 @@ cron.schedule("*/5 * * * * *", async function() {
     })
   });
 
-router.post("/", ensureToken, async (req, res) => {
+router.post("/", ensureToken, upload.single("img"), async (req, res) => {
     try{
         const { error } = validateAuction(req.body);
         const {myUser} = req
         if (error) return res.status(400).send(error.details[0].message);
 
         req.body.owner = myUser._id
+        req.body.img = req.file.filename
         const auction = new Auction(req.body);
         auction.save()
         myUser.auctions.push(auction._id)
@@ -57,7 +70,8 @@ router.get("/", ensureToken, async (req, res) => {
     const { isOver } = req.body
     var allAuctions
     if(isOver !== null){
-        allAuctions = await Auction.find({isOver: isOver}).populate("owner")
+        //allAuctions = await Auction.find({isOver: isOver}).populate("owner")
+        allAuctions = await Auction.find({}).populate("owner")
     }else{
         allAuctions = await Auction.find({}).populate("owner")
     }
