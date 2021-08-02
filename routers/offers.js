@@ -4,14 +4,18 @@ const { Offer, validateOffer } = require("../models/offer")
 const router = require("express").Router()
 const ensureToken = require("../middleware/jwt")
 const mongoose = require("mongoose");
+const multer = require("multer")
+
+const upload = multer()
 
 
 
 
 
 
-router.post("/:auctionId", ensureToken, async (req, res) => {
+router.post("/:auctionId", upload.any(), ensureToken, async (req, res) => {
     try{
+        console.log(req.body)
         const { auctionId } = req.params
         const {myUser} = req
         const { error } = validateOffer(req.body);
@@ -19,7 +23,8 @@ router.post("/:auctionId", ensureToken, async (req, res) => {
 
         req.body.owner = req.myUser._id
 
-        const auction = await Auction.findOne({ _id: auctionId});
+        let auction = await Auction.findOne({ _id: auctionId}).populate("offers");
+
         if(auction !== null){
             req.body.auction = auction._id
         }else{
@@ -27,16 +32,22 @@ router.post("/:auctionId", ensureToken, async (req, res) => {
         }
 
         const offer = new Offer(req.body)
+
+        if(offer.price < auction.startingPrice){
+            return res.status(400).send(`Offer must be higher than ${auction.startingPrice}`)
+        }
         // relationlar guncelleniyor
         auction.offers.push(offer._id)
-        auction.offers.sort((a, b) => a.price > b.price)
-        auction.save()
-        
+        await auction.save()
+        auction = await Auction.findOne({ _id: auctionId}).populate("offers");
         myUser.offers.push(offer._id)
-        myUser.offers.sort((a, b) => a.price > b.price)
         myUser.save()
 
         offer.save()
+
+
+        auction.offers.sort((a, b) => a.price - b.price)
+        auction.save()
         res.send(offer);
     } catch (error) {
         console.log(error);
