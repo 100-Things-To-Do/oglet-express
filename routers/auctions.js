@@ -51,7 +51,9 @@ router.post("/", ensureToken, upload.single("img"), async (req, res) => {
         if (error) return res.status(400).send(error.details[0].message);
 
         req.body.owner = myUser._id
-        req.body.img = req.file.filename
+        if (typeof req.file !== 'undefined'){            
+            req.body.img = req.file.filename
+        }
         const auction = new Auction(req.body);
         auction.save()
         myUser.auctions.push(auction._id)
