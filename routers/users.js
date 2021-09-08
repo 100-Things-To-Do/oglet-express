@@ -19,7 +19,7 @@ router.post("/signup", async (req, res) => {
 
         const sameUsernameUser = await User.findOne({ username: req.body.username });
         if(sameUsernameUser){
-            return res.status(400).send("username exists.");
+            return res.status(400).send("Username exists! Enter another username.");
         }
         const user = new User(req.body);
 
