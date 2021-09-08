@@ -24,6 +24,10 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    credit : {
+        type: Number,
+        default: 0
+    }
 });
 
 userSchema.methods.generateAuthToken = function () {

@@ -117,5 +117,12 @@ router.get("/whoami", ensureToken, async (req, res) => {
     res.json(myUser)
 })
 
+router.post("/addCredit", ensureToken, async(req, res) => {
+    const {myUser} = req
+    myUser.credit += req.body.credit
+    myUser.save()
+    res.status(200).send(`${req.body.credit} credit(s) added.`)
+})
+
 module.exports = router
 
