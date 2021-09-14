@@ -11,9 +11,8 @@ const upload = multer()
 
 
 
-
-
 router.post("/:auctionId", upload.any(), ensureToken, async (req, res) => {
+    // #swagger.tags = ['Offers']
     try{
         console.log(req.body)
         const { auctionId } = req.params
@@ -58,6 +57,7 @@ router.post("/:auctionId", upload.any(), ensureToken, async (req, res) => {
 })
 
 router.put("/:offerId", ensureToken, async (req, res) => {
+    // #swagger.tags = ['Offers']
     const { offerId } = req.params
     const { price } = req.body
     const offer = await Offer.findOne({ _id: offerId});
@@ -67,6 +67,7 @@ router.put("/:offerId", ensureToken, async (req, res) => {
 })
 
 router.delete("/:offerId", ensureToken, async (req, res) => {
+    // #swagger.tags = ['Offers']
     const { offerId } = req.params
     const { myUser } = req
     const offer = await Offer.findOne({ _id: offerId});
@@ -81,6 +82,7 @@ router.delete("/:offerId", ensureToken, async (req, res) => {
 
 
 router.get("/", ensureToken, async (req, res) => {
+    // #swagger.tags = ['Offers']
     const allOffers = await Offer.find({}).populate("owner").populate("auction")
     res.json(allOffers)
 })

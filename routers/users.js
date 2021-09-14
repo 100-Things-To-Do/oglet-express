@@ -13,6 +13,7 @@ const ensureToken = require("../middleware/jwt")
 
 
 router.post("/signup", async (req, res) => {
+    // #swagger.tags = ['Users']
     try {
         const { error } = validateUser(req.body);
         if (error) return res.status(400).send(error.details[0].message);
@@ -37,6 +38,7 @@ router.post("/signup", async (req, res) => {
 
 
 router.post("/signin", async (req, res) => {
+    // #swagger.tags = ['Users']
     try {
         
         const { error } = validateUser(req.body);
@@ -67,6 +69,7 @@ router.post("/signin", async (req, res) => {
 
 
 router.get("/me", ensureToken, (req, res) => {
+    // #swagger.tags = ['Users']
     res.status(200).json({
         "message": "TODO: will return jwt token here"
     })
@@ -75,12 +78,14 @@ router.get("/me", ensureToken, (req, res) => {
 
 
 router.get("/", ensureToken, async (req, res) => {
+    // #swagger.tags = ['Users']
     const allUsers = await User.find({}).populate("auctions")
     res.json(allUsers)
 
 })
 
 router.put("/", ensureToken, async (req, res) => {
+    // #swagger.tags = ['Users']
     const {myUser} = req
     const {newPassword} = req.body
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
@@ -92,6 +97,8 @@ router.put("/", ensureToken, async (req, res) => {
 
 
 router.delete("/", ensureToken, async (req, res) => {
+    // #swagger.tags = ['Users']
+
     // delete notifications
     // delete user auctions - delete user auction offers
     // delete user offers
@@ -113,11 +120,13 @@ router.delete("/", ensureToken, async (req, res) => {
 })
 
 router.get("/whoami", ensureToken, async (req, res) => {
+    // #swagger.tags = ['Users']
     const {myUser} = req
     res.json(myUser)
 })
 
 router.post("/addCredit", ensureToken, async(req, res) => {
+    // #swagger.tags = ['Users']
     const {myUser} = req
     myUser.credit += req.body.credit
     myUser.save()

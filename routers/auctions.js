@@ -45,6 +45,7 @@ cron.schedule("*/5 * * * * *", async function() {
   });
 
 router.post("/", ensureToken, upload.single("img"), async (req, res) => {
+    // #swagger.tags = ['Auctions']
     try{
         const { error } = validateAuction(req.body);
         const {myUser} = req
@@ -69,6 +70,7 @@ router.post("/", ensureToken, upload.single("img"), async (req, res) => {
 
 
 router.get("/", ensureToken, async (req, res) => {
+    // #swagger.tags = ['Auctions']
     const { isOver } = req.body
     var allAuctions
     if(isOver !== null){
@@ -82,12 +84,14 @@ router.get("/", ensureToken, async (req, res) => {
 })
 
 router.get("/:auctionId", ensureToken, async (req, res) => {
+    // #swagger.tags = ['Auctions']
     const { auctionId } = req.params
     const auction = await Auction.findOne({_id: auctionId}).populate("owner").populate("offers")
     res.status(200).json(auction)
 })
 
 router.delete("/:auctionId", ensureToken, async (req, res) => {
+    // #swagger.tags = ['Auctions']
     const { auctionId } = req.params
     const { myUser } = req
     const auction = await Auction.findOne({_id: auctionId})
@@ -114,6 +118,7 @@ router.delete("/:auctionId", ensureToken, async (req, res) => {
 })
 
 router.put("/:auctionId", async (req, res) => {
+    // #swagger.tags = ['Auctions']
     const { auctionId } = req.params
     const { myUser } = req
     const { name, startingPrice, closingPrice } = req.body

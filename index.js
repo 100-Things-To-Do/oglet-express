@@ -6,6 +6,8 @@ const offerRouter = require("./routers/offers")
 const notificationRouter = require("./routers/notifications")
 const connection = require("./db");
 var cors = require('cors')
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('./swagger_output.json')
 
 const server = express()
 connection();
@@ -13,14 +15,12 @@ connection();
 server.use(cors({credentials: true, origin: true}))
 server.use(express.json())
 server.use(express.static('client'))
+server.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 server.use("/users", usersRouter)
 server.use("/auctions", auctionsRouter)
 server.use("/offers", offerRouter)
 server.use("/notifications", notificationRouter)
 
-server.get('/', (req, res) => {
-    res.send("Hello from expressjs")
-})
 
 
 
