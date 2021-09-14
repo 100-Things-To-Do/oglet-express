@@ -1,0 +1,1 @@
+to run with swagger: npm run swagger-autogen
