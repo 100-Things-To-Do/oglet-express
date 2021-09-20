@@ -28,7 +28,7 @@ router.post("/:auctionId", upload.any(), ensureToken, async (req, res) => {
         const { auctionId } = req.params
         const {myUser} = req
         const { error } = validateOffer(req.body);
-        if (error) return res.status(400).send(error.details[0].message);
+        if (error) throw new Error(error.details[0].message);
 
         req.body.owner = req.myUser._id
 
@@ -37,13 +37,15 @@ router.post("/:auctionId", upload.any(), ensureToken, async (req, res) => {
         if(auction !== null){
             req.body.auction = auction._id
         }else{
-            res.send("auction with that id is not found.")
+            throw new Error("auction with that id is not found.")
         }
+
+
 
         const offer = new Offer(req.body)
 
         if(offer.price < auction.startingPrice){
-            return res.status(400).send(`Offer must be higher than ${auction.startingPrice}`)
+            throw new Error(`Offer must be higher than ${auction.startingPrice}`)
         }
         // relationlar guncelleniyor
         auction.offers.push(offer._id)
@@ -58,10 +60,10 @@ router.post("/:auctionId", upload.any(), ensureToken, async (req, res) => {
 
         auction.offers.sort((a, b) => a.price - b.price)
         await auction.save()
-        res.send(offer);
+        res.status(200).send(offer);
     } catch (error) {
         console.log(error);
-        res.send("An error occured");
+        throw new Error("An error occured");
     }
 
 
@@ -79,10 +81,18 @@ router.put("/:offerId", ensureToken, async (req, res) => {
                 $price: 71
             }
     } */
+    // TODO: int check
     const { offerId } = req.params
     const { price } = req.body
     const offer = await Offer.findOne({ _id: offerId});
-    if(price) offer.price = price
+    if(price){
+        if(price > offer.price){
+            offer.price = price
+        }else{
+            throw new Error("Offer cannot be lower than previous.")
+        }
+    } 
+        
     offer.save()
     res.status(200).send("offer updated.")
 })
@@ -112,7 +122,7 @@ router.get("/", ensureToken, async (req, res) => {
     }] */
 
     const allOffers = await Offer.find({}).populate("owner").populate("auction")
-    res.json(allOffers)
+    res.status(200).send(allOffers)
 })
 
 module.exports = router

@@ -24,11 +24,11 @@ router.post("/signup", async (req, res) => {
     } */
     try {
         const { error } = validateUser(req.body);
-        if (error) return res.status(400).send(error.details[0].message);
+        if (error) throw new Error(error.details[0].message);
 
         const sameUsernameUser = await User.findOne({ username: req.body.username });
         if (sameUsernameUser) {
-            return res.status(400).send("Username exists! Enter another username.");
+            throw new Error("Username exists! Enter another username.");
         }
         const user = new User(req.body);
 
@@ -39,7 +39,7 @@ router.post("/signup", async (req, res) => {
         res.send(user);
     } catch (error) {
         console.log(error);
-        res.send("An error occured");
+        throw new Error("An error occured");
     }
 });
 
@@ -58,10 +58,10 @@ router.post("/signin", async (req, res) => {
     try {
 
         const { error } = validateUser(req.body);
-        if (error) return res.status(400).send(error.details[0].message);
+        if (error) throw new Error(error.details[0].message);
 
         const user = await User.findOne({ username: req.body.username });
-        if (!user) return res.status(400).send("User not found");
+        if (!user) throw new Error("User not found");
 
         const validPassword = await bcrypt.compare(
             req.body.password,
@@ -69,7 +69,7 @@ router.post("/signin", async (req, res) => {
         );
 
         if (!validPassword)
-            return res.status(400).send("Invalid password");
+            throw new Error("Invalid password");
 
         const token = user.generateAuthToken();
         const data = {}
@@ -78,7 +78,7 @@ router.post("/signin", async (req, res) => {
         res.send(data);
     } catch (error) {
         console.log(error);
-        res.send("An error occured");
+        throw new Error("An error occured");
     }
 });
 
@@ -102,7 +102,7 @@ router.get("/", ensureToken, async (req, res) => {
         "Bearer": []
     }] */
     const allUsers = await User.find({}).populate("auctions")
-    res.json(allUsers)
+    res.status(200).send(allUsers)
 
 })
 

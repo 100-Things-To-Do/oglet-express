@@ -32,7 +32,7 @@ schema: {
         res.send(notification);
     } catch (error) {
         console.log(error);
-        res.send("An error occured");
+        res.status(200).send("An error occured");
     }
 
 
@@ -44,7 +44,7 @@ router.get("/", ensureToken, async (req, res) => {
         "Bearer": []
     }] */
     const userNotifications = await Notification.find({owner: req.currentUser._id}).populate("owner")
-    res.json(userNotifications)
+    res.status(200).send(userNotifications)
 })
 
 router.delete("/:notificationId", ensureToken, async (req, res) => {
@@ -55,7 +55,7 @@ router.delete("/:notificationId", ensureToken, async (req, res) => {
     const { notificationId } = req.params
     const {myUser} = req
     const notification = await Notification.findOne({_id: notificationId})
-    if(!notification) return res.status(400).send("notification not found");
+    if(!notification) throw new Error("notification not found");
     myUser.notifications.remove(notification._id)
     myUser.save()
     notification.delete()
@@ -76,7 +76,7 @@ schema: {
 } */
     const { notificationId } = req.params
     const notification = await Notification.findOne({_id: notificationId})
-    if(!notification) return res.status(400).send("notification not found");
+    if(!notification) throw new Error("notification not found");
     notification.isRead = req.body.isRead
     notification.save()
     res.status(200).send("Notification updated.")  

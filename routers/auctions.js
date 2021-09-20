@@ -90,9 +90,9 @@ router.get("/", ensureToken, async (req, res) => {
     var allAuctions
     if (isOver !== null) {
         //allAuctions = await Auction.find({isOver: isOver}).populate("owner")
-        allAuctions = await Auction.find({}).populate("owner")
+        allAuctions = await Auction.find({}).populate("owner").populate("offers")
     } else {
-        allAuctions = await Auction.find({}).populate("owner")
+        allAuctions = await Auction.find({}).populate("owner").populate("offers")
     }
 
     res.status(200).json(allAuctions)
@@ -105,7 +105,11 @@ router.get("/:auctionId", ensureToken, async (req, res) => {
 }] */
     const { auctionId } = req.params
     const auction = await Auction.findOne({ _id: auctionId }).populate("owner").populate("offers")
-    res.status(200).json(auction)
+    if(auction){
+        res.status(200).json(auction)
+    }else{
+        throw new Error('Auction not found!') // Express will catch this on its own.
+    }
 })
 
 router.delete("/:auctionId", ensureToken, async (req, res) => {
@@ -116,7 +120,7 @@ router.delete("/:auctionId", ensureToken, async (req, res) => {
     const { auctionId } = req.params
     const { myUser } = req
     const auction = await Auction.findOne({ _id: auctionId })
-    if (myUser._id.str !== auction.owner.str) return res.status(403).send("You dont have rights to delete auction.")
+    if (myUser._id.str !== auction.owner.str) throw new Error("You dont have rights to delete auction.")
     const users = await User.find({})
     myUser.auctions.remove(auction._id)
     myUser.save()
@@ -124,7 +128,7 @@ router.delete("/:auctionId", ensureToken, async (req, res) => {
     await Offer.deleteMany({ auction: auction._id }, (err, data) => {
         if (err) {
             console.log(err)
-            res.status(400).send("error deleting offers.")
+            throw new Error("error deleting offers.")
         }
     })
     offers.forEach(offer => {
