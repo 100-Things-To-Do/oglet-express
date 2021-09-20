@@ -48,15 +48,16 @@ router.post("/:auctionId", upload.any(), ensureToken, async (req, res) => {
         // relationlar guncelleniyor
         auction.offers.push(offer._id)
         await auction.save()
+        await offer.save()
         auction = await Auction.findOne({ _id: auctionId}).populate("offers");
         myUser.offers.push(offer._id)
-        myUser.save()
+        await myUser.save()
 
-        offer.save()
+
 
 
         auction.offers.sort((a, b) => a.price - b.price)
-        auction.save()
+        await auction.save()
         res.send(offer);
     } catch (error) {
         console.log(error);
