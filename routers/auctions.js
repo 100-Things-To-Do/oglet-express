@@ -4,7 +4,7 @@ const { User, validateUser } = require("../models/user")
 const router = require("express").Router()
 const ensureToken = require("../middleware/jwt")
 const cron = require('node-cron');
-const { Notification, validateNotification} = require("../models/notification")
+const { Notification, validateNotification } = require("../models/notification")
 const multer = require("multer")
 
 const storage = multer.diskStorage({
@@ -16,43 +16,55 @@ const storage = multer.diskStorage({
     }
 })
 
-const upload = multer({storage: storage})
+const upload = multer({ storage: storage })
 
 const aDayToMs = 24 * 60 * 60 * 1000
 
-cron.schedule("*/5 * * * * *", async function() {
+cron.schedule("*/5 * * * * *", async function () {
     const currentMs = (new Date()).getTime()
-    const allAuctions = await Auction.find({isOver: false}).populate("offers").populate("owner")
+    const allAuctions = await Auction.find({ isOver: false }).populate("offers").populate("owner")
 
     allAuctions.forEach((auction) => {
 
         var auctionCreatedMs = new Date(auction.createdAt).getTime();
-        if(currentMs > (auctionCreatedMs + aDayToMs)){
+        if (currentMs > (auctionCreatedMs + aDayToMs)) {
             auction.isOver = true
             auction.save()
-            
-            if(auction.offers !== []){
-                const buyerNotification = new Notification({owner: auction.offers[0].owner._id, message: "You have won auction with id: " + auction._id})
-                buyerNotification.save() 
 
-                const sellerNotification = new Notification({owner: auction.owner._id, message: "You have sold your item to user: " + auction.offers[0].owner.username})
+            if (auction.offers !== []) {
+                const buyerNotification = new Notification({ owner: auction.offers[0].owner._id, message: "You have won auction with id: " + auction._id })
+                buyerNotification.save()
+
+                const sellerNotification = new Notification({ owner: auction.owner._id, message: "You have sold your item to user: " + auction.offers[0].owner.username })
                 sellerNotification.save()
             }
 
 
         }
     })
-  });
+});
 
 router.post("/", ensureToken, upload.single("img"), async (req, res) => {
     // #swagger.tags = ['Auctions']
-    try{
+        /* #swagger.security = [{
+        "Bearer": []
+    }] */
+        /*    #swagger.parameters['obj'] = {
+            in: 'body',
+            description: 'Adding new auction.',
+            schema: {
+                $name: 'doruk',
+                $startingPrice: 50,
+                $closingPrice: 60
+                }
+    } */
+    try {
         const { error } = validateAuction(req.body);
-        const {myUser} = req
+        const { myUser } = req
         if (error) return res.status(400).send(error.details[0].message);
 
         req.body.owner = myUser._id
-        if (typeof req.file !== 'undefined'){            
+        if (typeof req.file !== 'undefined') {
             req.body.img = req.file.filename
         }
         const auction = new Auction(req.body);
@@ -71,37 +83,46 @@ router.post("/", ensureToken, upload.single("img"), async (req, res) => {
 
 router.get("/", ensureToken, async (req, res) => {
     // #swagger.tags = ['Auctions']
+        /* #swagger.security = [{
+        "Bearer": []
+    }] */
     const { isOver } = req.body
     var allAuctions
-    if(isOver !== null){
+    if (isOver !== null) {
         //allAuctions = await Auction.find({isOver: isOver}).populate("owner")
         allAuctions = await Auction.find({}).populate("owner")
-    }else{
+    } else {
         allAuctions = await Auction.find({}).populate("owner")
     }
-    
+
     res.status(200).json(allAuctions)
 })
 
 router.get("/:auctionId", ensureToken, async (req, res) => {
     // #swagger.tags = ['Auctions']
+    /* #swagger.security = [{
+    "Bearer": []
+}] */
     const { auctionId } = req.params
-    const auction = await Auction.findOne({_id: auctionId}).populate("owner").populate("offers")
+    const auction = await Auction.findOne({ _id: auctionId }).populate("owner").populate("offers")
     res.status(200).json(auction)
 })
 
 router.delete("/:auctionId", ensureToken, async (req, res) => {
     // #swagger.tags = ['Auctions']
+    /* #swagger.security = [{
+        "Bearer": []
+    }] */
     const { auctionId } = req.params
     const { myUser } = req
-    const auction = await Auction.findOne({_id: auctionId})
-    if(myUser._id.str !== auction.owner.str) return res.status(403).send("You dont have rights to delete auction.")
+    const auction = await Auction.findOne({ _id: auctionId })
+    if (myUser._id.str !== auction.owner.str) return res.status(403).send("You dont have rights to delete auction.")
     const users = await User.find({})
     myUser.auctions.remove(auction._id)
     myUser.save()
-    const offers = await Offer.find({auction: auction._id})
-    await Offer.deleteMany({auction: auction._id}, (err, data) => {
-        if(err){
+    const offers = await Offer.find({ auction: auction._id })
+    await Offer.deleteMany({ auction: auction._id }, (err, data) => {
+        if (err) {
             console.log(err)
             res.status(400).send("error deleting offers.")
         }
@@ -110,20 +131,30 @@ router.delete("/:auctionId", ensureToken, async (req, res) => {
         users.forEach(user => {
             user.offers.remove(offer._id)
             user.save()
-        })  
+        })
     })
 
     auction.delete()
     res.send("auction deleted.")
 })
 
+
 router.put("/:auctionId", async (req, res) => {
     // #swagger.tags = ['Auctions']
+    /*  #swagger.parameters['parameter_name'] = {
+            in: 'body',
+            description: 'Put auction',
+            schema: {
+                $name: 'dorukChanged',
+                $startingPrice: 55,
+                $closingPrice: 65
+            }
+    } */
     const { auctionId } = req.params
     const { myUser } = req
     const { name, startingPrice, closingPrice } = req.body
-    
-    const auction = await Auction.findOne({_id: auctionId})
+
+    const auction = await Auction.findOne({ _id: auctionId })
     auction.name = name
     auction.startingPrice = startingPrice
     auction.closingPrice = closingPrice

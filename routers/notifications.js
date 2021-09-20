@@ -6,6 +6,17 @@ const mongoose = require("mongoose");
 
 router.post("/", ensureToken, async (req, res) => {
     // #swagger.tags = ['Notifications']
+        /* #swagger.security = [{
+        "Bearer": []
+    }] */
+
+/*  #swagger.parameters['obj'] = {
+in: 'body',
+description: 'Post notification',
+schema: {
+    $message: "temp notification."
+}
+} */
     try{
         const {myUser} = req
         const { error } = validateNotification(req.body);
@@ -29,12 +40,18 @@ router.post("/", ensureToken, async (req, res) => {
 
 router.get("/", ensureToken, async (req, res) => {
     // #swagger.tags = ['Notifications']
+        /* #swagger.security = [{
+        "Bearer": []
+    }] */
     const userNotifications = await Notification.find({owner: req.currentUser._id}).populate("owner")
     res.json(userNotifications)
 })
 
 router.delete("/:notificationId", ensureToken, async (req, res) => {
     // #swagger.tags = ['Notifications']
+        /* #swagger.security = [{
+        "Bearer": []
+    }] */
     const { notificationId } = req.params
     const {myUser} = req
     const notification = await Notification.findOne({_id: notificationId})
@@ -47,6 +64,16 @@ router.delete("/:notificationId", ensureToken, async (req, res) => {
 
 router.put("/:notificationId", ensureToken, async (req, res) => {
     // #swagger.tags = ['Notifications']
+        /* #swagger.security = [{
+        "Bearer": []
+    }] */
+/*  #swagger.parameters['obj'] = {
+in: 'body',
+description: 'Post notification',
+schema: {
+    $isRead: true
+}
+} */
     const { notificationId } = req.params
     const notification = await Notification.findOne({_id: notificationId})
     if(!notification) return res.status(400).send("notification not found");
