@@ -5,12 +5,22 @@
     "title": "REST API",
     "description": ""
   },
-  "host": "localhost:3000",
-  "basePath": "/",
-  "tags": [],
-  "schemes": [
-    "http"
+  "host": "",
+  "basePath": "",
+  "tags": [
+    {
+      "name": "",
+      "description": ""
+    }
   ],
+  "schemes": [],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "authorization",
+      "in": "header"
+    }
+  },
   "consumes": [],
   "produces": [],
   "paths": {
@@ -24,21 +34,27 @@
           {
             "name": "obj",
             "in": "body",
+            "description": "Adding new user.",
             "schema": {
               "type": "object",
               "properties": {
                 "username": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "doruk"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "dodo1234"
                 }
-              }
+              },
+              "required": [
+                "username",
+                "password"
+              ]
             }
           }
         ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
+        "responses": {}
       }
     },
     "/users/signin": {
@@ -51,41 +67,27 @@
           {
             "name": "obj",
             "in": "body",
+            "description": "Logging in.",
             "schema": {
               "type": "object",
               "properties": {
                 "username": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "doruk"
                 },
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "dodo1234"
                 }
-              }
+              },
+              "required": [
+                "username",
+                "password"
+              ]
             }
           }
         ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/users/me": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
+        "responses": {}
       }
     },
     "/users/": {
@@ -99,7 +101,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -110,24 +117,31 @@
           {
             "name": "obj",
             "in": "body",
+            "description": "New password",
             "schema": {
               "type": "object",
               "properties": {
                 "newPassword": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "doruk"
                 }
-              }
+              },
+              "required": [
+                "newPassword"
+              ]
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -136,13 +150,15 @@
         "description": "",
         "parameters": [],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/users/whoami": {
@@ -156,7 +172,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/users/addCredit": {
@@ -169,24 +190,31 @@
           {
             "name": "obj",
             "in": "body",
+            "description": "Adding credit",
             "schema": {
               "type": "object",
               "properties": {
                 "credit": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 50
                 }
-              }
+              },
+              "required": [
+                "credit"
+              ]
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/auctions/": {
@@ -199,55 +227,58 @@
           {
             "name": "obj",
             "in": "body",
+            "description": "Adding new auction.",
             "schema": {
               "type": "object",
               "properties": {
-                "owner": {
-                  "example": "any"
+                "name": {
+                  "type": "string",
+                  "example": "doruk"
                 },
-                "img": {
-                  "example": "any"
+                "startingPrice": {
+                  "type": "number",
+                  "example": 50
+                },
+                "closingPrice": {
+                  "type": "number",
+                  "example": 60
                 }
-              }
+              },
+              "required": [
+                "name",
+                "startingPrice",
+                "closingPrice"
+              ]
             }
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "get": {
         "tags": [
           "Auctions"
         ],
         "description": "",
-        "parameters": [
-          {
-            "name": "obj",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "isOver": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/auctions/{auctionId}": {
@@ -265,13 +296,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -287,13 +320,15 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -308,29 +343,34 @@
             "type": "string"
           },
           {
-            "name": "obj",
+            "name": "parameter_name",
             "in": "body",
+            "description": "Put auction",
             "schema": {
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "dorukChanged"
                 },
                 "startingPrice": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 55
                 },
                 "closingPrice": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 65
                 }
-              }
+              },
+              "required": [
+                "name",
+                "startingPrice",
+                "closingPrice"
+              ]
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
+        "responses": {}
       }
     },
     "/offers/{auctionId}": {
@@ -347,29 +387,33 @@
             "type": "string"
           },
           {
-            "name": "obj",
+            "name": "parameter_name",
             "in": "body",
+            "description": "Post offer",
             "schema": {
               "type": "object",
               "properties": {
-                "owner": {
-                  "example": "any"
-                },
-                "auction": {
-                  "example": "any"
+                "price": {
+                  "type": "number",
+                  "example": 70
                 }
-              }
+              },
+              "required": [
+                "price"
+              ]
             }
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/offers/{offerId}": {
@@ -386,26 +430,33 @@
             "type": "string"
           },
           {
-            "name": "obj",
+            "name": "parameter_name",
             "in": "body",
+            "description": "Put offer",
             "schema": {
               "type": "object",
               "properties": {
                 "price": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 71
                 }
-              }
+              },
+              "required": [
+                "price"
+              ]
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -421,13 +472,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/offers/": {
@@ -441,7 +494,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/notifications/": {
@@ -454,24 +512,31 @@
           {
             "name": "obj",
             "in": "body",
+            "description": "Post notification",
             "schema": {
               "type": "object",
               "properties": {
-                "owner": {
-                  "example": "any"
+                "message": {
+                  "type": "string",
+                  "example": "temp notification."
                 }
-              }
+              },
+              "required": [
+                "message"
+              ]
             }
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "get": {
         "tags": [
@@ -483,7 +548,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/notifications/{notificationId}": {
@@ -501,16 +571,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -527,27 +596,31 @@
           {
             "name": "obj",
             "in": "body",
+            "description": "Post notification",
             "schema": {
               "type": "object",
               "properties": {
                 "isRead": {
-                  "example": "any"
+                  "type": "boolean",
+                  "example": true
                 }
-              }
+              },
+              "required": [
+                "isRead"
+              ]
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     }
   },
