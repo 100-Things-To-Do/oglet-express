@@ -5,7 +5,7 @@ const { Response } = require('../responses')
 const { routeFunctionErrorHandler } = require('../handleErrors')
 
 
-router.post("/", ensureToken, async (req, res) => {
+router.post("/", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Notifications']
     /* #swagger.security = [{
     "Bearer": []
@@ -25,15 +25,15 @@ router.post("/", ensureToken, async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err);
     }
 
 })
 
 
 
-router.get("/", ensureToken, async (req, res) => {
+router.get("/", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Notifications']
     /* #swagger.security = [{
     "Bearer": []
@@ -45,13 +45,13 @@ router.get("/", ensureToken, async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err)
     }
 })
 
 
-router.delete("/:notificationId", ensureToken, async (req, res) => {
+router.delete("/:notificationId", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Notifications']
     /* #swagger.security = [{
     "Bearer": []
@@ -64,13 +64,13 @@ router.delete("/:notificationId", ensureToken, async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err);
     }
 })
 
 
-router.put("/:notificationId", ensureToken, async (req, res) => {
+router.put("/:notificationId", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Notifications']
     /* #swagger.security = [{
     "Bearer": []
@@ -89,8 +89,8 @@ router.put("/:notificationId", ensureToken, async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err);
     }
 })
 

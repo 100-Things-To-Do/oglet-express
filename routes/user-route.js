@@ -5,7 +5,7 @@ const { Response } = require('../responses')
 const { routeFunctionErrorHandler } = require('../handleErrors')
 
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", async (req, res, next) => {
     // #swagger.tags = ['Users']
     /*    #swagger.parameters['obj'] = {
             in: 'body',
@@ -21,13 +21,13 @@ router.post("/signup", async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err)
     }
 });
 
 
-router.post("/signin", async (req, res) => {
+router.post("/signin", async (req, res, next) => {
     // #swagger.tags = ['Users']
     /*    #swagger.parameters['obj'] = {
             in: 'body',
@@ -43,13 +43,13 @@ router.post("/signin", async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err);
     }
 });
 
 
-router.get("/", ensureToken, async (req, res) => {
+router.get("/", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Users']
     /* #swagger.security = [{
         "Bearer": []
@@ -60,24 +60,24 @@ router.get("/", ensureToken, async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err)
     }
 })
 
 
-router.put("/", ensureToken, async (req, res) => {
+router.put("/", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Users']
     /* #swagger.security = [{
         "Bearer": []
     }] */
-        /*    #swagger.parameters['obj'] = {
-            in: 'body',
-            description: 'New password',
-            schema: {
-                $newPassword: 'doruk'
-            }
-    } */
+    /*    #swagger.parameters['obj'] = {
+        in: 'body',
+        description: 'New password',
+        schema: {
+            $newPassword: 'doruk'
+        }
+} */
     const responseEntity = new Response();
     const { myUser } = req
     const { newPassword } = req.body
@@ -86,13 +86,13 @@ router.put("/", ensureToken, async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err)
     }
 })
 
 
-router.delete("/", ensureToken, async (req, res) => {
+router.delete("/", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Users']
     /* #swagger.security = [{
     "Bearer": []
@@ -109,31 +109,31 @@ router.delete("/", ensureToken, async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err)
     }
 })
 
 
-router.get("/whoami", ensureToken, async (req, res) => {
+router.get("/whoami", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Users']
     /* #swagger.security = [{
     "Bearer": []
 }] */
     const responseEntity = new Response();
-    const { myUser } = req    
+    const { myUser } = req
     try {
         responseEntity.data = await userService.getUser(myUser).catch(error => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err)
     }
 })
 
 
-router.post("/addCredit", ensureToken, async (req, res) => {
+router.post("/addCredit", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Users']
     /* #swagger.security = [{
     "Bearer": []
@@ -152,8 +152,8 @@ router.post("/addCredit", ensureToken, async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err)
     }
 })
 

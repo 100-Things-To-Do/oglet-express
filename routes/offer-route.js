@@ -8,67 +8,67 @@ const multer = require("multer")
 const upload = multer()
 
 
-router.post("/:auctionId", upload.any(), ensureToken, async (req, res) => {
+router.post("/:auctionId", upload.any(), ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Offers']
-        /* #swagger.security = [{
-        "Bearer": []
-    }] */
-            /*  #swagger.parameters['parameter_name'] = {
-            in: 'body',
-            description: 'Post offer',
-            schema: {
-                $price: 70
-            }
-    } */
+    /* #swagger.security = [{
+    "Bearer": []
+}] */
+    /*  #swagger.parameters['parameter_name'] = {
+    in: 'body',
+    description: 'Post offer',
+    schema: {
+        $price: 70
+    }
+} */
     const responseEntity = new Response();
     const { auctionId } = req.params
-    const {myUser} = req
+    const { myUser } = req
     try {
         responseEntity.data = await offerService.createOffer(auctionId, myUser, req.body).catch(error => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err)
     }
 
 
 })
 
 
-router.put("/:offerId", ensureToken, async (req, res) => {
+router.put("/:offerId", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Offers']
-        /* #swagger.security = [{
-        "Bearer": []
-    }] */
-            /*  #swagger.parameters['parameter_name'] = {
-            in: 'body',
-            description: 'Put offer',
-            schema: {
-                $price: 71
-            }
-    } */
+    /* #swagger.security = [{
+    "Bearer": []
+}] */
+    /*  #swagger.parameters['parameter_name'] = {
+    in: 'body',
+    description: 'Put offer',
+    schema: {
+        $price: 71
+    }
+} */
     // TODO: int check
     const responseEntity = new Response();
     const { offerId } = req.params
     const { price } = req.body
-    const {myUser} = req
+    const { myUser } = req
     try {
         responseEntity.data = await offerService.updateOffer(myUser, offerId, price).catch(error => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err)
     }
 })
 
 
-router.delete("/:offerId", ensureToken, async (req, res) => {
+router.delete("/:offerId", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Offers']
-        /* #swagger.security = [{
-        "Bearer": []
-    }] */
+    /* #swagger.security = [{
+    "Bearer": []
+}] */
     const responseEntity = new Response();
     const { offerId } = req.params
     const { myUser } = req
@@ -77,25 +77,25 @@ router.delete("/:offerId", ensureToken, async (req, res) => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err);
     }
 })
 
 
-router.get("/", ensureToken, async (req, res) => {
+router.get("/", ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Offers']
-        /* #swagger.security = [{
-        "Bearer": []
-    }] */
+    /* #swagger.security = [{
+    "Bearer": []
+}] */
     const responseEntity = new Response();
     try {
         responseEntity.data = await offerService.getAllOffers().catch(error => {
             throw error;
         });
         res.status(responseEntity.statusCode).json(responseEntity.data);
-    } catch (exception) {
-        routeFunctionErrorHandler(res, exception, null);
+    } catch (err) {
+        next(err)
     }
 
 })
