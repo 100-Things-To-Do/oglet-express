@@ -3,11 +3,7 @@ const offerService = require("../services/offer-service")
 const ensureToken = require("../middleware/jwt")
 const { Response } = require('../responses')
 
-const multer = require("multer")
-const upload = multer()
-
-
-router.post("/:auctionId", upload.any(), ensureToken, async (req, res, next) => {
+router.post("/:auctionId", global.upload.any(), ensureToken, async (req, res, next) => {
     // #swagger.tags = ['Offers']
     /* #swagger.security = [{
     "Bearer": []

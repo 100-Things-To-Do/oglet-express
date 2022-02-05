@@ -3,20 +3,10 @@ const auctionService = require("../services/auction-service")
 const ensureToken = require("../middleware/jwt")
 const { Response } = require('../responses')
 
-const multer = require("multer")
-
-const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        callback(null, "client/")
-    },
-    filename: (req, file, callback) => {
-        callback(null, Date.now() + ".jpg")
-    }
-})
-const upload = multer({ storage: storage })
 
 
-router.post("/", ensureToken, upload.single("img"), async (req, res, next) => {
+
+router.post("/", ensureToken, global.upload.single("img"), async (req, res, next) => {
     // #swagger.tags = ['Auctions']
     /* #swagger.security = [{
     "Bearer": []
