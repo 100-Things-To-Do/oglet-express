@@ -24,7 +24,7 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
-    credit : {
+    credit: {
         type: Number,
         default: 0
     }
@@ -32,7 +32,7 @@ const userSchema = new Schema({
 
 userSchema.methods.generateAuthToken = function () {
     // { expiresIn: '1800s' }
-    const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEY);
+    const token = jwt.sign({ _id: this._id }, global.JWTPRIVATEKEY);
     return token;
 };
 
