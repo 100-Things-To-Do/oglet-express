@@ -1,5 +1,6 @@
 require("dotenv").config();
 Object.assign(global, process.env)
+require('./storage')();
 const express = require('express')
 const userRouter = require("./routes/user-route")
 const auctionRouter = require("./routes/auction-route")
