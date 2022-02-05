@@ -2,7 +2,6 @@ const router = require("express").Router()
 const offerService = require("../services/offer-service")
 const ensureToken = require("../middleware/jwt")
 const { Response } = require('../responses')
-const { routeFunctionErrorHandler } = require('../handleErrors')
 
 const multer = require("multer")
 const upload = multer()

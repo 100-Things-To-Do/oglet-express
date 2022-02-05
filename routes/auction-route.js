@@ -2,7 +2,6 @@ const router = require("express").Router()
 const auctionService = require("../services/auction-service")
 const ensureToken = require("../middleware/jwt")
 const { Response } = require('../responses')
-const { routeFunctionErrorHandler } = require('../handleErrors')
 
 const multer = require("multer")
 

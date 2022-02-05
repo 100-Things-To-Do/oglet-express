@@ -2,7 +2,6 @@ const router = require("express").Router()
 const notificationService = require("../services/notification-service")
 const ensureToken = require("../middleware/jwt")
 const { Response } = require('../responses')
-const { routeFunctionErrorHandler } = require('../handleErrors')
 
 
 router.post("/", ensureToken, async (req, res, next) => {

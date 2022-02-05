@@ -2,7 +2,6 @@ const router = require("express").Router()
 const userService = require("../services/user-service")
 const ensureToken = require("../middleware/jwt")
 const { Response } = require('../responses')
-const { routeFunctionErrorHandler } = require('../handleErrors')
 
 
 router.post("/signup", async (req, res, next) => {
