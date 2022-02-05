@@ -15,7 +15,7 @@ async function createUser(userObj) {
     }
     const user = new User(userObj);
 
-    const salt = await bcrypt.genSalt(Number(process.env.SALT));
+    const salt = await bcrypt.genSalt(Number(global.SALT));
     user.password = await bcrypt.hash(user.password, salt);
     user.save();
 
@@ -52,7 +52,7 @@ async function getAllUsers() {
 
 
 async function updateUser(myUser, newPassword) {
-    const salt = await bcrypt.genSalt(Number(process.env.SALT));
+    const salt = await bcrypt.genSalt(Number(global.SALT));
     myUser.password = await bcrypt.hash(newPassword, salt);
     myUser.save()
     return "Password updated.";

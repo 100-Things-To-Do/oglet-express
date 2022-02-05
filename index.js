@@ -1,4 +1,5 @@
 require("dotenv").config();
+Object.assign(global, process.env)
 const express = require('express')
 const userRouter = require("./routes/user-route")
 const auctionRouter = require("./routes/auction-route")
@@ -29,6 +30,6 @@ server.use(function (err, req, res, next) {
 });
 
 
-server.listen(5000, () => {
-    console.log("https://localhost:5000 is listening.")
+server.listen(global.PORT, () => {
+    console.log(`https://localhost:${global.PORT} is listening.`)
 })
