@@ -20,8 +20,9 @@ module.exports = async () => {
             host: global.PQ_HOSTNAME,
             database: global.PQ_DATABASE,
             password: global.PQ_PASSWORD,
-            port: global.PQ_PORT,
+            port: Number(global.PQ_PORT),
         });
+        await client.connect();
     }
 
 
