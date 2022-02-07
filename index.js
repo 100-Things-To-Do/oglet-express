@@ -18,10 +18,20 @@ const swaggerFile = require('./swagger_output.json')
 
 
 
+function requestMonitoring(req, res, next) {
+    console.log('path:', req._parsedUrl.href, 'body:', req.body, 'params:', req.params, 'query:', req.query);
+    next();
+}
+function responseMonitoring(req, res, next) {
+    console.log(res);
+    res.end();
+}
+
 
 server.use(cors({ credentials: true, origin: true }))
 server.use(express.json())
 server.use(express.static('client'))
+server.use(requestMonitoring);
 server.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 server.use("/users", userRouter)
 server.use("/auctions", auctionRouter)
@@ -29,6 +39,7 @@ server.use("/offers", offerRouter)
 server.use("/notifications", notificationRouter)
 server.use("/domains", domainRouter);
 server.use("/cards", cardRouter);
+server.use(responseMonitoring)
 
 
 
