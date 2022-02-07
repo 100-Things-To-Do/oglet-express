@@ -1,18 +1,23 @@
 require("dotenv").config();
 Object.assign(global, process.env)
 require('./storage')();
+require("./db")();
 const express = require('express')
+const server = express()
+
 const userRouter = require("./routes/user-route")
 const auctionRouter = require("./routes/auction-route")
 const offerRouter = require("./routes/offer-route")
 const notificationRouter = require("./routes/notification-route")
-const connection = require("./db");
+const domainRouter = require("./routes/domain-route")
+const cardRouter = require("./routes/card-route")
+
 var cors = require('cors')
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('./swagger_output.json')
 
-const server = express()
-connection();
+
+
 
 server.use(cors({ credentials: true, origin: true }))
 server.use(express.json())
@@ -22,6 +27,9 @@ server.use("/users", userRouter)
 server.use("/auctions", auctionRouter)
 server.use("/offers", offerRouter)
 server.use("/notifications", notificationRouter)
+server.use("/domains", domainRouter);
+server.use("/cards", cardRouter);
+
 
 
 server.use(function (err, req, res, next) {
