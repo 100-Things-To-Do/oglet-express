@@ -2,8 +2,8 @@ require("dotenv").config();
 Object.assign(global, process.env)
 require('./storage')();
 require("./db")();
+const morgan = require('morgan');
 const express = require('express')
-const server = express()
 
 const userRouter = require("./routes/user-route")
 const auctionRouter = require("./routes/auction-route")
@@ -18,20 +18,20 @@ const swaggerFile = require('./swagger_output.json')
 
 
 
+
 function requestMonitoring(req, res, next) {
-    console.log('path:', req._parsedUrl.href, 'body:', req.body, 'params:', req.params, 'query:', req.query);
+    console.log(new Date().toISOString().slice(11, -1) + ' path:', req._parsedUrl.href, 'body:', req.body, 'params:', req.params, 'query:', req.query);
     next();
 }
-function responseMonitoring(req, res, next) {
-    console.log(res);
-    res.end();
-}
 
 
+const server = express()
 server.use(cors({ credentials: true, origin: true }))
-server.use(express.json())
+server.use(express.json());
 server.use(express.static('client'))
-server.use(requestMonitoring);
+//server.use(requestMonitoring);
+morgan.token('body', (req, res) => JSON.stringify(req.body));
+server.use(morgan(':method :url :status :response-time ms - :body '))
 server.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 server.use("/users", userRouter)
 server.use("/auctions", auctionRouter)
@@ -39,7 +39,6 @@ server.use("/offers", offerRouter)
 server.use("/notifications", notificationRouter)
 server.use("/domains", domainRouter);
 server.use("/cards", cardRouter);
-server.use(responseMonitoring)
 
 
 
