@@ -16,3 +16,9 @@ ALTER TABLE
   public.card
 ADD
   CONSTRAINT card_fk FOREIGN KEY (domain_id) REFERENCES public."domain"(id);
+ALTER TABLE
+  card
+ALTER COLUMN
+  image
+SET
+  NOT NULL;

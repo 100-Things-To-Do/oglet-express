@@ -7,7 +7,8 @@ async function createDomain(name, size) {
 }
 
 async function getDomains() {
-    return "it worked";
+    let result = await clientQuery(scripts.getDomains, []);
+    return result && result.rows ? result.rows : [];
 }
 
 module.exports = {

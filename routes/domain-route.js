@@ -4,7 +4,7 @@ const { Response } = require('../responses')
 
 
 
-router.post("/", global.upload.single("img"), async (req, res, next) => {
+router.post("/", async (req, res, next) => {
     const responseEntity = new Response();
     try {
         responseEntity.data = await domainService.createDomain(req.body.name, req.body.size).catch(error => {
