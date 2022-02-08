@@ -26,7 +26,7 @@ function requestMonitoring(req, res, next) {
 
 
 const server = express()
-server.use(cors({ credentials: true, origin: true }))
+server.use(cors())
 server.use(express.json());
 server.use(express.static('client'))
 //server.use(requestMonitoring);
